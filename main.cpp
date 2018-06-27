@@ -9,7 +9,10 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
+#include <sstream>
 using namespace std;
+
 class result
 {
 private:
@@ -57,20 +60,29 @@ public:
             cout<<score[i]<<"   "<<endl;
     }
 };
+
+string Trim(string& str)
+{
+    //str.find_first_not_of(" \t\r\n"),在字符串str中从索引0开始，返回首次不匹配"\t\r\n"的位置
+    str.erase(0,str.find_first_not_of(" \t\r\n"));
+    str.erase(str.find_last_not_of(" \t\r\n") + 1);
+    return str;
+}
+
 int main()
 {
     int i,j;
     int m;
     int idsize;
-    cout<<"请输入参赛选手人数"<<endl;
-    cin>>m;
+    //cout<<"请输入参赛选手人数"<<endl;
+    //cin>>m;
     idsize=m;
     int *id;
     id=new int[idsize];
     vector<float>aver;
     vector<string>name;
     vector<vector<float>>x(m,vector<float>(5));
-    cout<<"请输入所有参赛选手信息"<<endl;
+    /*cout<<"请输入所有参赛选手信息"<<endl;
     for(i=0;i<m;i++)
     {
         string na;
@@ -79,7 +91,7 @@ int main()
         cout<<"第"<<i+1<<"名选手姓名"<<endl;
         cin>>na;
         name.push_back(na);
-    }
+    }*/
     cout<<endl<<endl<<"==========比赛开始请裁判打分==========="<<endl<<endl;
     for(i=0;i<m;i++)
     {
@@ -120,5 +132,31 @@ int main()
     cout<<"名次"<<""<<"编号"<<""<<"姓名"<<""<<"得分"<<endl;
     for(i=m-1;i>=0;i--)
         cout<<"第"<<m-1<<"名"<<"   "<<id[i]<<"    "<<name[i]<<"    "<<aver[i]<<endl;
-    
+    class csvdata
+    {
+        public:
+            int id;
+            int level;
+            float price;
+            float cost;
+    };//行的类定义
+    ifstream fin("//Users//20161104571//Desktop//poject1//test.csv"); //打开文件流操作
+    string line;
+    while (getline(fin, line))   //整行读取，换行符“\n”区分，遇到文件尾标志eof终止读取
+    {
+        cout <<"原始字符串："<< line << endl; //整行输出
+        istringstream sin(line); //将整行字符串line读入到字符串流istringstream中
+        vector<string> fields; //声明一个字符串向量
+        string field;
+        while (getline(sin, field, ',')) //将字符串流sin中的字符读入到field字符串中，以逗号为分隔符
+        {
+            fields.push_back(field); //将刚刚读取的字符串添加到向量fields中
+        }
+        string name = Trim(fields[0]); //清除掉向量fields中第一个元素的无效字符，并赋值给变量name
+        string age = Trim(fields[1]); //清除掉向量fields中第二个元素的无效字符，并赋值给变量age
+        string birthday = Trim(fields[2]); //清除掉向量fields中第三个元素的无效字符，并赋值给变量birthday
+        cout <<"处理之后的字符串："<< name << "\t" << age << "\t" << birthday << endl;
+    }
+    return EXIT_SUCCESS;
+
 }
